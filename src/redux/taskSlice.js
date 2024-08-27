@@ -1,9 +1,10 @@
+// taskSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 import { fetchTasks, addTask, updateTask, deleteTask } from '../api/taskApi';
 
 const initialState = {
   tasks: [],
-  status: '',
+  status: 'idle',
   error: null,
 };
 
@@ -31,7 +32,7 @@ export const taskSlice = createSlice({
       })
       .addCase(addTask.fulfilled, (state, action) => {
         state.status = 'idle';
-        // Optionally, update tasks list after adding a task
+        state.tasks.push(action.payload);
       })
       .addCase(addTask.rejected, (state, action) => {
         state.status = 'failed';
@@ -43,7 +44,9 @@ export const taskSlice = createSlice({
       })
       .addCase(updateTask.fulfilled, (state, action) => {
         state.status = 'idle';
-        // Optionally, update tasks list after updating a task
+        state.tasks = state.tasks.map(task =>
+          task._id === action.payload._id ? action.payload : task
+        );
       })
       .addCase(updateTask.rejected, (state, action) => {
         state.status = 'failed';
@@ -55,7 +58,7 @@ export const taskSlice = createSlice({
       })
       .addCase(deleteTask.fulfilled, (state, action) => {
         state.status = 'idle';
-        // Optionally, update tasks list after deleting a task
+        state.tasks = state.tasks.filter(task => task._id !== action.payload);
       })
       .addCase(deleteTask.rejected, (state, action) => {
         state.status = 'failed';
@@ -65,3 +68,4 @@ export const taskSlice = createSlice({
 });
 
 export default taskSlice.reducer;
+  

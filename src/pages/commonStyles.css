@@ -48,14 +48,15 @@
 
 /* Card Styles */
 .card {
-background-color: #fff;
-border-radius: 8px;
-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-padding: 16px;
-display: flex;
-flex-direction: column;
-justify-content: space-between; /* Ensures buttons are at the bottom */
-min-height: 200px; /* Adjust as needed */
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 200px;
+  position: relative; /* Ensure child elements are positioned relative to this */
 }
 
 .card h2 {
@@ -72,8 +73,18 @@ color: #666;
 
 /* Button Group Styles */
 .button-group {
-display: flex;
-gap: 20px; /* Adjust gap for spacing between buttons */
-margin-top: 10px;
-justify-content: flex-end; /* Align buttons to the right */
+  display: flex;
+  gap: 20px; /* Adjust gap for spacing between buttons */
+  margin-top: 10px;
+  justify-content: flex-end; /* Align buttons to the right */
+}
+
+
+/* Comments styles */
+.commentsSection {
+  margin-top: 20px; /* Space between content and comments */
+}
+
+.commentsList {
+  margin-bottom: 20px; /* Space between comments and action buttons */
 }

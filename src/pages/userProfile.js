@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 const UserProfile = () => {
   const user = useSelector(state => state.auth.user);
-    console.log(user,"userprofile.js")
+    // console.log(user,"userprofile.js")
   return (
     <div className="user-profile" style={{color:"black",paddingRight: "10px"}}>
       {user && (

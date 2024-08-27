@@ -108,7 +108,7 @@ const Users = () => {
     <div className="container">
       <div className="inputGroup">
         <label htmlFor="userIdInput" className="inputLabel">
-          Enter User Id to search
+          Enter User Name to search
         </label>
         <input
           id="userIdInput"
@@ -221,8 +221,8 @@ const Users = () => {
             </div>
           </>
         )}
-      </div>
-      {status === 'idle' && users.length > 0 && (
+      </div>{console.log(status)}
+      {status === 'succeeded' && users.length > 0 && (
         <div className="gridContainer">
           {users.map((item) => (
             <div key={item._id} className="card">

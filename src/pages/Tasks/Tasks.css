@@ -19,13 +19,30 @@
   margin-bottom: 8px;
 }
 
-.inputField {
+.commentInput {
   padding: 8px;
   font-size: 16px;
   border-radius: 4px;
   border: 1px solid #ccc;
-  width: 300px;
+  width: 100%; /* Full width of the container */
+  box-sizing: border-box; /* Include padding and border in width */
+  resize: none; /* Prevent resizing */
 }
+
+.commentButton {
+  align-self: flex-end; /* Align button to the end of the container */
+  background-color: #8744c7; /* Button color */
+  color: #fff;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.commentButton:hover {
+  background-color: #1b9763; /* Button hover color */
+}
+
 
 .gridContainer {
   display: grid;
@@ -36,37 +53,59 @@
   max-width: 1200px;
 }
 
-/* Card Styles */
-.card {
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between; /* Ensures buttons are pushed to the bottom */
-  min-height: 200px; /* Ensures a minimum height for consistent button alignment */
-}
-
-.card h2 {
-  margin: 0 0 8px;
-  font-size: 18px;
-  color: #333;
-}
-
-.card p {
-  margin: 4px 0;
-  font-size: 16px;
-  color: #666;
-}
-
 /* Button Group Styles */
-.button-group {
+.buttonGroup {
   display: flex;
-  justify-content: flex-end; /* Align buttons to the end */
-  gap: 10px; /* Adjust gap for spacing between buttons */
+  gap: 10px; /* Gap between buttons */
 }
 
-.button-group button {
-  flex: 1; /* Ensure buttons use available space evenly */
+.button {
+  padding: 8px 16px;
+  font-size: 14px; /* Slightly smaller font size */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.button-filter {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.button-filter.active {
+  background-color: #0056b3; /* Highlight active filter */
+}
+
+.button-clear {
+  background-color: #8744c7;
+  color: #fff;
+  margin: 5px;
+}
+
+.button-clear:hover {
+  background-color: #c82333;
+}
+
+.button-search {
+  font-size: 14px;
+  padding: 8px 12px;
+  margin: 15px;
+}
+
+.button-submit {
+  background-color: #8744c7;
+  color: #fff;
+  margin: 5px;
+}
+
+/* src/components/Tasks.css */
+
+.button-clear-filter.disabled {
+  background-color: #ddd; /* Light grey or any color indicating disabled state */
+  cursor: not-allowed;
+}
+
+.button-clear-filter.active {
+  background-color: rgb(103, 121, 199); /* Red or any color for active state */
+  color: #fff;
 }

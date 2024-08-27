@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchTasks, addTask, updateTask, deleteTask } from '../../api/taskApi';
+import { addComment, fetchComments } from '../../redux/commentsSlice';
 import './Tasks.css'; // Import specific styles
 import '../commonStyles.css'; // Import common styles
 
@@ -9,35 +10,52 @@ const Tasks = () => {
   const tasks = useSelector(state => state.tasks.tasks);
   const status = useSelector(state => state.tasks.status);
   const error = useSelector(state => state.tasks.error);
+  const user = useSelector(state => state.auth.user);
+  const comments = useSelector(state => state.comments.comments); // Fetch comments from the state
   const [taskId, setTaskId] = useState('');
   const [newTask, setNewTask] = useState({
     title: '',
     assigned_to: '',
     description: '',
     due_date: '',
-    status: 'pending'
+    status: 'pending',
+    priority: 'Medium'
   });
-  const [editTask, setEditTask] = useState(null); // State for the task being edited
-  const [formMode, setFormMode] = useState(''); // 'add' or 'edit'
+  const [editTask, setEditTask] = useState(null);
+  const [formMode, setFormMode] = useState('');
+  const [filter, setFilter] = useState('');
+  const [newComment, setNewComment] = useState('');
 
   useEffect(() => {
-    // Fetch tasks when the component mounts
     dispatch(fetchTasks(''));
   }, [dispatch]);
+
+  useEffect(() => {
+    if (editTask) {
+      dispatch(fetchComments(editTask._id)); // Fetch comments for the task being edited
+    }
+  }, [dispatch, editTask]);
 
   const handleFetchTasks = () => {
     dispatch(fetchTasks(taskId));
   };
 
-  const handleTaskIdChange = (e) => {
-    setTaskId(e.target.value);
-  };
-
   const handleAdd = async () => {
     try {
-      await dispatch(addTask(newTask)).unwrap();
-      setNewTask({ title: '', assigned_to: '', description: '', due_date: '', status: 'pending' }); // Clear form
-      dispatch(fetchTasks('')); // Fetch tasks again to update the list
+      const taskData = {
+        ...newTask,
+        assigned_to: user.role === 'admin' ? newTask.assigned_to : user.name, // Set assigned_to based on role
+      };
+      await dispatch(addTask(taskData)).unwrap();
+      setNewTask({
+        title: '',
+        assigned_to: '',
+        description: '',
+        due_date: '',
+        status: 'pending',
+        priority: 'Medium'
+      });
+      dispatch(fetchTasks(''));
     } catch (error) {
       console.error('Failed to add task:', error);
     }
@@ -87,6 +105,14 @@ const Tasks = () => {
     }
   };
 
+  const handlePriorityChange = (e) => {
+    if (formMode === 'add') {
+      setNewTask({ ...newTask, priority: e.target.value });
+    } else if (editTask) {
+      setEditTask({ ...editTask, priority: e.target.value });
+    }
+  };
+
   const getErrorMessage = () => {
     if (error) {
       if (error.status === 404) {
@@ -99,15 +125,49 @@ const Tasks = () => {
   };
 
   const handleEditClick = (task) => {
-    setEditTask({ ...task }); // Populate edit form with task data
-    setFormMode('edit'); // Switch to edit mode
+    setEditTask({ ...task });
+    setFormMode('edit');
+    dispatch(fetchComments(task._id));
   };
 
   const clearForm = () => {
-    setNewTask({ title: '', assigned_to: '', description: '', due_date: '', status: 'pending' });
+    setNewTask({
+      title: '',
+      assigned_to: '',
+      description: '',
+      due_date: '',
+      status: 'pending',
+      priority: 'Medium'
+    });
     setEditTask(null);
     setFormMode('');
     setTaskId('');
+  };
+
+  const handleFilter = (status) => {
+    setFilter(status);
+    dispatch(fetchTasks(''));
+  };
+
+  const clearFilter = () => {
+    setFilter('');
+    dispatch(fetchTasks(''));
+  };
+
+  const filteredTasks = tasks.filter(task => {
+    return filter === '' || task.status === filter;
+  });
+
+  const handleAddComment = async () => {
+    if (newComment.trim() && editTask?._id) {
+      try {
+        await dispatch(addComment({ taskId: editTask._id, commentData: { text: newComment } })).unwrap();
+        setNewComment('');
+        dispatch(fetchComments(editTask._id));
+      } catch (error) {
+        console.error('Failed to add comment:', error);
+      }
+    }
   };
 
   if (status === 'loading') return <div>Loading...</div>;
@@ -116,25 +176,61 @@ const Tasks = () => {
   return (
     <div className="container">
       <div className="inputGroup">
-        <label htmlFor="taskIdInput" className="inputLabel">Enter Task Id to search</label>
+        <label htmlFor="taskIdInput" className="inputLabel">Enter Task Details to Search</label>
         <input
           id="taskIdInput"
           type="text"
           value={taskId}
-          onChange={handleTaskIdChange}
+          onChange={(e) => setTaskId(e.target.value)}
           className="inputField"
         />
-      </div>
-      <div className="buttonGroup">
-        <button type="button" className="button button-add" onClick={handleFetchTasks}>
-          Search Task
+        <button
+          type="button"
+          className="button button-search"
+          onClick={handleFetchTasks}
+        >
+          Search
         </button>
-        <button type="button" className="button button-add" onClick={() => setFormMode('add')}>
+      </div>
+
+      <div className="buttonGroup">
+        <button
+          type="button"
+          className={`button button-filter ${filter === 'pending' ? 'active' : ''}`}
+          onClick={() => handleFilter('pending')}
+        >
+          Show Pending
+        </button>
+        <button
+          type="button"
+          className={`button button-filter ${filter === 'in_progress' ? 'active' : ''}`}
+          onClick={() => handleFilter('in_progress')}
+        >
+          Show In Progress
+        </button>
+        <button
+          type="button"
+          className={`button button-filter ${filter === 'done' ? 'active' : ''}`}
+          onClick={() => handleFilter('done')}
+        >
+          Show Completed
+        </button>
+        <button
+          type="button"
+          className="button button-clear-filter"
+          onClick={clearFilter}
+        >
+          &times; {/* or use "Clear" text */}
+        </button>
+        <button
+          type="button"
+          className="button button-add"
+          onClick={() => setFormMode('add')}
+        >
           Add Task
         </button>
       </div>
 
-      {/* Always show the form for adding or editing tasks */}
       <div className="inputGroup" style={{ marginTop: '20px' }}>
         {formMode === 'add' && (
           <>
@@ -147,6 +243,7 @@ const Tasks = () => {
               onChange={handleChangeNewTask}
               className="inputField"
             />
+            {user.role ==="admin" && <div>
             <label htmlFor="newTaskAssignedTo" className="inputLabel">Assigned To</label>
             <input
               id="newTaskAssignedTo"
@@ -155,7 +252,8 @@ const Tasks = () => {
               value={newTask.assigned_to}
               onChange={handleChangeNewTask}
               className="inputField"
-            />
+              />
+              </div>}
             <label htmlFor="newTaskDescription" className="inputLabel">Description</label>
             <input
               id="newTaskDescription"
@@ -186,12 +284,24 @@ const Tasks = () => {
               <option value="in_progress">In Progress</option>
               <option value="done">Done</option>
             </select>
+            <label htmlFor="newTaskPriority" className="inputLabel">Priority</label>
+            <select
+              id="newTaskPriority"
+              name="priority"
+              value={newTask.priority}
+              onChange={handlePriorityChange}
+              className="inputField"
+            >
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+            </select>
             <div className="buttonGroup">
               <button
                 onClick={handleAdd}
-                className="button button-add"
+                className="button button-submit"
               >
-                Add Task
+                Submit
               </button>
               <button
                 onClick={clearForm}
@@ -252,10 +362,22 @@ const Tasks = () => {
               <option value="in_progress">In Progress</option>
               <option value="done">Done</option>
             </select>
+            <label htmlFor="editTaskPriority" className="inputLabel">Priority</label>
+            <select
+              id="editTaskPriority"
+              name="priority"
+              value={editTask.priority}
+              onChange={handlePriorityChange}
+              className="inputField"
+            >
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+            </select>
             <div className="buttonGroup">
               <button
                 onClick={handleUpdate}
-                className="button button-update"
+                className="button button-submit"
               >
                 Save Update
               </button>
@@ -269,9 +391,10 @@ const Tasks = () => {
           </>
         )}
       </div>
-      {status === 'idle' && tasks.length > 0 && (
+
+      {status === 'idle' && filteredTasks.length > 0 && (
         <div className="gridContainer">
-          {tasks.map((item) => (
+          {filteredTasks.map((item) => (
             <div
               key={item._id}
               className="card"
@@ -281,6 +404,7 @@ const Tasks = () => {
               <p>Description: {item.description}</p>
               <p>Due Date: {item.due_date}</p>
               <p>Status: {item.status === "in_progress" ? "In Progress" : item.status}</p>
+              <p>Priority: {item.priority}</p>
               <div className="button-group" style={{ marginTop: '10px' }}>
                 <button
                   onClick={() => handleEditClick(item)}
@@ -295,6 +419,33 @@ const Tasks = () => {
                   Delete
                 </button>
               </div>
+              {formMode === 'edit' && editTask && editTask._id === item._id && (
+                <div className="commentsSection" style={{ marginTop: '20px' }}>
+                  <h3>Comments:</h3>
+                  <div className="commentsList">
+                    {(comments[item._id] || []).map((comment, index) => (
+                      <div key={index} className="comment">
+                        <p><b>{comment.author}</b> : {comment.text}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="inputGroup">
+                    <textarea
+                      value={newComment}
+                      onChange={(e) => setNewComment(e.target.value)}
+                      className="commentInput"
+                      placeholder="Add a comment"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddComment}
+                      className="button button-add-comment"
+                    >
+                      Add Comment
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>
