@@ -13,10 +13,10 @@ This project is a web application that allows users to manage tasks and comments
     CRUD operations for user accounts.
 
 ## Technologies Used
-  * React
-    * Redux Toolkit
-    * React Router
-    * Axios (for API requests)
+* React
+* Redux Toolkit
+* React Router
+* Axios (for API requests)
 ## Setup
 ## Prerequisites
 * Node.js and npm installed
@@ -28,9 +28,9 @@ This project is a web application that allows users to manage tasks and comments
 github.com/yourusername/your-repo.git
 cd your-repo
 
-Install dependencies:
+### Install dependencies:
 npm install
 
-Run the application:
+### Run the application:
 npm start
 
