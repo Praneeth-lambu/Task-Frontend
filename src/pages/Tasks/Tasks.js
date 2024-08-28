@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchTasks, addTask, updateTask, deleteTask } from '../../api/taskApi';
 import { addComment, fetchComments } from '../../redux/commentsSlice';
+import TaskForm from './TaskForm'; // Import the TaskForm component
 import './Tasks.css'; // Import specific styles
 import '../commonStyles.css'; // Import common styles
 
@@ -11,7 +12,7 @@ const Tasks = () => {
   const status = useSelector(state => state.tasks.status);
   const error = useSelector(state => state.tasks.error);
   const user = useSelector(state => state.auth.user);
-  const comments = useSelector(state => state.comments.comments); // Fetch comments from the state
+  const comments = useSelector(state => state.comments.comments);
   const [taskId, setTaskId] = useState('');
   const [newTask, setNewTask] = useState({
     title: '',
@@ -32,7 +33,7 @@ const Tasks = () => {
 
   useEffect(() => {
     if (editTask) {
-      dispatch(fetchComments(editTask._id)); // Fetch comments for the task being edited
+      dispatch(fetchComments(editTask._id));
     }
   }, [dispatch, editTask]);
 
@@ -44,17 +45,10 @@ const Tasks = () => {
     try {
       const taskData = {
         ...newTask,
-        assigned_to: user.role === 'admin' ? newTask.assigned_to : user.name, // Set assigned_to based on role
+        assigned_to: user.role === 'admin' ? newTask.assigned_to : user.name,
       };
       await dispatch(addTask(taskData)).unwrap();
-      setNewTask({
-        title: '',
-        assigned_to: '',
-        description: '',
-        due_date: '',
-        status: 'pending',
-        priority: 'Medium'
-      });
+      clearForm();
       dispatch(fetchTasks(''));
     } catch (error) {
       console.error('Failed to add task:', error);
@@ -65,9 +59,8 @@ const Tasks = () => {
     if (editTask) {
       try {
         await dispatch(updateTask(editTask)).unwrap();
-        setEditTask(null); // Clear edit form
-        setFormMode('add'); // Reset form mode to 'add'
-        dispatch(fetchTasks('')); // Fetch tasks again to update the list
+        clearForm();
+        dispatch(fetchTasks(''));
       } catch (error) {
         console.error('Failed to update task:', error);
       }
@@ -77,49 +70,38 @@ const Tasks = () => {
   const handleDelete = async (id) => {
     try {
       await dispatch(deleteTask(id)).unwrap();
-      dispatch(fetchTasks('')); // Fetch tasks again to update the list
+      dispatch(fetchTasks(''));
     } catch (error) {
       console.error('Failed to delete task:', error);
     }
   };
 
-  const handleChangeNewTask = (e) => {
-    setNewTask({
-      ...newTask,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const handleChangeEditTask = (e) => {
-    setEditTask({
-      ...editTask,
-      [e.target.name]: e.target.value
-    });
+  const handleChangeTask = (e) => {
+    const { name, value } = e.target;
+    if (formMode === 'add') {
+      setNewTask({
+        ...newTask,
+        [name]: value
+      });
+    } else if (editTask) {
+      setEditTask({
+        ...editTask,
+        [name]: value
+      });
+    }
   };
 
   const handleStatusChange = (e) => {
-    if (formMode === 'add') {
-      setNewTask({ ...newTask, status: e.target.value });
-    } else if (editTask) {
-      setEditTask({ ...editTask, status: e.target.value });
-    }
+    handleChangeTask(e);
   };
 
   const handlePriorityChange = (e) => {
-    if (formMode === 'add') {
-      setNewTask({ ...newTask, priority: e.target.value });
-    } else if (editTask) {
-      setEditTask({ ...editTask, priority: e.target.value });
-    }
+    handleChangeTask(e);
   };
 
   const getErrorMessage = () => {
     if (error) {
-      if (error.status === 404) {
-        return error.message;
-      } else {
-        return error.message || 'An error occurred. Please try again later.';
-      }
+      return error.status === 404 ? error.message : error.message || 'An error occurred. Please try again later.';
     }
     return null;
   };
@@ -150,13 +132,13 @@ const Tasks = () => {
   };
 
   const clearFilter = () => {
-    setFilter('');
-    dispatch(fetchTasks(''));
+    if (filter !== '') {
+      setFilter('');
+      dispatch(fetchTasks(''));
+    }
   };
 
-  const filteredTasks = tasks.filter(task => {
-    return filter === '' || task.status === filter;
-  });
+  const filteredTasks = tasks.filter(task => filter === '' || task.status === filter);
 
   const handleAddComment = async () => {
     if (newComment.trim() && editTask?._id) {
@@ -220,7 +202,7 @@ const Tasks = () => {
           className="button button-clear-filter"
           onClick={clearFilter}
         >
-          &times; {/* or use "Clear" text */}
+          &times;
         </button>
         <button
           type="button"
@@ -231,166 +213,16 @@ const Tasks = () => {
         </button>
       </div>
 
-      <div className="inputGroup" style={{ marginTop: '20px' }}>
-        {formMode === 'add' && (
-          <>
-            <label htmlFor="newTaskTitle" className="inputLabel">Title</label>
-            <input
-              id="newTaskTitle"
-              name="title"
-              type="text"
-              value={newTask.title}
-              onChange={handleChangeNewTask}
-              className="inputField"
-            />
-            {user.role ==="admin" && <div>
-            <label htmlFor="newTaskAssignedTo" className="inputLabel">Assigned To</label>
-            <input
-              id="newTaskAssignedTo"
-              name="assigned_to"
-              type="text"
-              value={newTask.assigned_to}
-              onChange={handleChangeNewTask}
-              className="inputField"
-              />
-              </div>}
-            <label htmlFor="newTaskDescription" className="inputLabel">Description</label>
-            <input
-              id="newTaskDescription"
-              name="description"
-              type="text"
-              value={newTask.description}
-              onChange={handleChangeNewTask}
-              className="inputField"
-            />
-            <label htmlFor="newTaskDueDate" className="inputLabel">Due Date</label>
-            <input
-              id="newTaskDueDate"
-              name="due_date"
-              type="date"
-              value={newTask.due_date}
-              onChange={handleChangeNewTask}
-              className="inputField"
-            />
-            <label htmlFor="newTaskStatus" className="inputLabel">Status</label>
-            <select
-              id="newTaskStatus"
-              name="status"
-              value={newTask.status}
-              onChange={handleStatusChange}
-              className="inputField"
-            >
-              <option value="pending">Pending</option>
-              <option value="in_progress">In Progress</option>
-              <option value="done">Done</option>
-            </select>
-            <label htmlFor="newTaskPriority" className="inputLabel">Priority</label>
-            <select
-              id="newTaskPriority"
-              name="priority"
-              value={newTask.priority}
-              onChange={handlePriorityChange}
-              className="inputField"
-            >
-              <option value="Low">Low</option>
-              <option value="Medium">Medium</option>
-              <option value="High">High</option>
-            </select>
-            <div className="buttonGroup">
-              <button
-                onClick={handleAdd}
-                className="button button-submit"
-              >
-                Submit
-              </button>
-              <button
-                onClick={clearForm}
-                className="button button-clear"
-              >
-                Clear
-              </button>
-            </div>
-          </>
-        )}
-        {formMode === 'edit' && editTask && (
-          <>
-            <label htmlFor="editTaskTitle" className="inputLabel">Title</label>
-            <input
-              id="editTaskTitle"
-              name="title"
-              type="text"
-              value={editTask.title}
-              onChange={handleChangeEditTask}
-              className="inputField"
-            />
-            <label htmlFor="editTaskAssignedTo" className="inputLabel">Assigned To</label>
-            <input
-              id="editTaskAssignedTo"
-              name="assigned_to"
-              type="text"
-              value={editTask.assigned_to}
-              onChange={handleChangeEditTask}
-              className="inputField"
-            />
-            <label htmlFor="editTaskDescription" className="inputLabel">Description</label>
-            <input
-              id="editTaskDescription"
-              name="description"
-              type="text"
-              value={editTask.description}
-              onChange={handleChangeEditTask}
-              className="inputField"
-            />
-            <label htmlFor="editTaskDueDate" className="inputLabel">Due Date</label>
-            <input
-              id="editTaskDueDate"
-              name="due_date"
-              type="date"
-              value={editTask.due_date}
-              onChange={handleChangeEditTask}
-              className="inputField"
-            />
-            <label htmlFor="editTaskStatus" className="inputLabel">Status</label>
-            <select
-              id="editTaskStatus"
-              name="status"
-              value={editTask.status}
-              onChange={handleStatusChange}
-              className="inputField"
-            >
-              <option value="pending">Pending</option>
-              <option value="in_progress">In Progress</option>
-              <option value="done">Done</option>
-            </select>
-            <label htmlFor="editTaskPriority" className="inputLabel">Priority</label>
-            <select
-              id="editTaskPriority"
-              name="priority"
-              value={editTask.priority}
-              onChange={handlePriorityChange}
-              className="inputField"
-            >
-              <option value="Low">Low</option>
-              <option value="Medium">Medium</option>
-              <option value="High">High</option>
-            </select>
-            <div className="buttonGroup">
-              <button
-                onClick={handleUpdate}
-                className="button button-submit"
-              >
-                Save Update
-              </button>
-              <button
-                onClick={clearForm}
-                className="button button-clear"
-              >
-                Clear
-              </button>
-            </div>
-          </>
-        )}
-      </div>
+      {formMode && (
+        <TaskForm
+          task={formMode === 'add' ? newTask : editTask}
+          onChange={handleChangeTask}
+          onSubmit={formMode === 'add' ? handleAdd : handleUpdate}
+          onCancel={clearForm}
+          user={user}
+          mode={formMode}
+        />
+      )}
 
       {status === 'idle' && filteredTasks.length > 0 && (
         <div className="gridContainer">

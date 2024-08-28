@@ -1,17 +1,17 @@
-/* Login.css */
+/* Register.css */
 
 /* Overall Container */
-.login-container {
+.register-container {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: 282c34; /* Light background color */
+    background-color: #c7d8f8; /* Light background color */
 }
 
 /* Box with Shadow */
-.login-box {
-    /* background: #ffffff; */
+.register-box {
+    background: transparent;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     max-width: 400px;
@@ -20,17 +20,10 @@
     text-align: center;
 }
 
-/* Company Name */
-.company-name h1 {
-    margin-bottom: 1rem;
-    font-size: 24px;
-    color: #333; /* Dark color for text */
-}
-
-/* Login Header */
-.login-header {
+/* Header */
+.register-header {
     margin-bottom: 1.5rem;
-    font-size: 20px;
+    font-size: 24px;
     font-weight: bold;
     color: #333;
 }
@@ -53,11 +46,18 @@
     padding: 0.75rem;
     font-size: 16px;
     border-radius: 4px;
-    border: 1px solid #ccc;
+    border: 1px solid #000000;
     box-sizing: border-box;
-    background-color: transparent; 
+    background-color: transparent;
 }
 
+.form-text {
+    display: block;
+    margin-top: 0.5rem;
+    color: #666;
+}
+
+/* Button Styles */
 .btn {
     padding: 0.75rem 1.5rem;
     font-size: 16px;
@@ -68,13 +68,15 @@
     width: 100%;
 }
 
-.btn-primary {
-    background-color: #007bff;
-    color: white;
+.btn-outline-primary {
+    background-color: transparent;
+    border: 1px solid #007bff;
+    color: #007bff;
 }
 
-.btn-primary:hover {
-    background-color: #0056b3;
+.btn-outline-primary:hover {
+    background-color: #007bff;
+    color: white;
 }
 
 /* Status Messages */
@@ -84,4 +86,8 @@
 
 .status.error {
     color: red;
+}
+
+.status.success {
+    color: green;
 }

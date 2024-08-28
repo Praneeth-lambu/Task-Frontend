@@ -1,9 +1,9 @@
-// src/components/Navbar.js
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../redux/authSlice';
 import UserProfile from '../pages/userProfile';
+import { clearNotifications } from '../redux/notificationSlice';
 
 const Navbar = () => {
     const dispatch = useDispatch();
@@ -13,6 +13,7 @@ const Navbar = () => {
     const handleLogout = async () => {
         try {
             await dispatch(logout()).unwrap();
+            dispatch(clearNotifications()); // Dispatch action to clear notifications
             navigate('/login');
         } catch (error) {
             console.error("Logout failed:", error.message);
@@ -20,12 +21,12 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="navbar navbar-expand-lg bg-body-tertiary" style={{ fontSize: "22px" }}>
+        <nav className="navbar navbar-expand-lg" style={{ fontSize: "22px" }}>
             <div className="container-fluid">
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>
-                        <UserProfile className="nav-item"/>
+                <UserProfile className="nav-item"/>
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                         <li className="nav-item">
@@ -40,7 +41,6 @@ const Navbar = () => {
                             <li className="nav-item">
                                 <a className="nav-link" href="/tasks">Tasks</a>
                             </li>
-                            
                         )}
                     </ul>
                     <div>

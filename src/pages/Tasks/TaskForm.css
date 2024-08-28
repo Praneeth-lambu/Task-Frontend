@@ -1,0 +1,21 @@
+/* Ensure input fields have proper margins for error text */
+/* ftaskform.css */
+
+/* Style input fields with errors */
+.inputField.inputError {
+  border-color: rgb(241, 111, 111);
+  border-width: 2px;
+} */
+
+/* Style for error message container */
+.errorContainer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.25rem;
+}
+
+/* Style for the input error message */
+.errorMessage {
+  color: red;
+  font-size: 0.875rem;
+}

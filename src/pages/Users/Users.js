@@ -102,7 +102,7 @@ const Users = () => {
   };
 
   if (status === 'loading') return <div>Loading...</div>;
-  if (status === 'failed') return <div>Error: {getErrorMessage()}</div>;
+  if (status === 'failed' && error.status !== 404 && error.status !== 400 ) return <div>Error: {getErrorMessage()}</div>;
 
   return (
     <div className="container">
@@ -214,7 +214,7 @@ const Users = () => {
               <option value="user">User</option>
               <option value="admin">Admin</option>
             </select>
-            <div style={{ textAlign: 'center' }}>
+            <div style={{ textAlign: 'center', margin:"10px" }}>
               <button onClick={handleSaveUpdate} className="button button-update">
                 Save Update
               </button>
@@ -242,6 +242,7 @@ const Users = () => {
           ))}
         </div>
       )}
+    {getErrorMessage()}
     </div>
   );
 };

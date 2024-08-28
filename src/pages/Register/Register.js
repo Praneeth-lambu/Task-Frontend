@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { register } from '../../redux/authSlice';
+import './Register.css'; // Import the CSS file
 
 const Register = () => {
     const dispatch = useDispatch();
@@ -14,105 +15,65 @@ const Register = () => {
     const handleRegister = async () => {
         try {
             await dispatch(register({ email, name, password })).unwrap();
-            // Clear the form
             setEmail('');
             setName('');
             setPassword('');
-            navigate('/login'); // Redirect to login page on success
-
+            navigate('/login');
         } catch (error) {
-            console.error("Registration failed:", error); // Log error for debugging
+            console.error("Registration failed:", error);
         }
     };
 
     return (
-        <>
-            <div style={{ paddingLeft: "700px" }}>
-                <h1>User Registration</h1>
-            </div>
-            <div className='m-5' style={{ display: "flex", flexDirection: "column", paddingLeft: "400px" }}>
-                
-                <div className="row pt-3">
-                    <div className="col-auto">
-                        <label htmlFor="inputname" className="col-form-label">Name</label>
-                    </div>
-                    <div className="col-auto" style={{ paddingLeft: "36px" }}>
-                        <input
-                            type="text"
-                            id="inputname"
-                            className="form-control"
-                            aria-describedby="namehelper"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                        />
-                    </div>
-                    <div className="col-auto">
-                        <span id="namehelper" className="form-text" style={{ color: "white" }}>
-                            Must be min of 4 characters.
-                        </span>
-                    </div>
+        <div className="container">
+            <div className="box register-box">
+                <h1 className="register-header">User Registration</h1>
+                <div className="form-group">
+                    <label htmlFor="inputname">Name</label>
+                    <input
+                        type="text"
+                        id="inputname"
+                        className="form-control"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                    />
+                    <span className="form-text">Must be min of 4 characters.</span>
                 </div>
-                <div className="row pt-3">
-                    <div className="col-auto">
-                        <label htmlFor="inputemail" className="col-form-label">Email</label>
-                    </div>
-                    <div className="col-auto" style={{ paddingLeft: "39px" }}>
-                        <input
-                            type="email"
-                            id="inputemail"
-                            className="form-control"
-                            aria-describedby="emailHelper"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                    </div>
+                <div className="form-group">
+                    <label htmlFor="inputemail">Email</label>
+                    <input
+                        type="email"
+                        id="inputemail"
+                        className="form-control"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
                 </div>
-                <div className="row pt-3">
-                    <div className="col-auto">
-                        <label htmlFor="inputPassword6" className="col-form-label">Password</label>
-                    </div>
-                    <div className="col-auto">
-                        <input
-                            type="password"
-                            id="inputPassword6"
-                            className="form-control"
-                            aria-describedby="passwordHelpInline"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                    </div>
-                    <div className="col-auto">
-                        <span id="passwordHelpInline" className="form-text" style={{ color: "white" }}>
-                            Must be 8-20 characters long.
-                        </span>
-                    </div>
+                <div className="form-group">
+                    <label htmlFor="inputPassword">Password</label>
+                    <input
+                        type="password"
+                        id="inputPassword"
+                        className="form-control"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <span className="form-text">Must be 8-20 characters long.</span>
                 </div>
-                <div style={{ padding: "30px 0px 10px 100px" }}>
+                <div className="button-group">
                     <button
                         type="button"
-                        className="btn btn-outline-primary mb-3"
-                        style={{ marginRight: "20px" }}
+                        className="btn btn-primary"
                         onClick={handleRegister}
                     >
                         Register
                     </button>
-                    <button
-                        type="reset"
-                        className="btn btn-outline-primary mb-3"
-                        onClick={() => {
-                            setEmail('');
-                            setName('');
-                            setPassword('');
-                        }}
-                    >
-                        Reset
-                    </button>
                 </div>
-                {auth.status === 'loading' && <div>Loading...</div>}
-                {auth.status === 'failed' && <div style={{ color: 'red' }}>Error: {auth.error}</div>}
-                {auth.status === 'succeeded' && <div>Registration successful!</div>}
+                {auth.status === 'loading' && <div className="status">Loading...</div>}
+                {auth.status === 'failed' && <div className="status error">Error: {auth.error}</div>}
+                {auth.status === 'succeeded' && <div className="status success">Registration successful!</div>}
             </div>
-        </>
+        </div>
     );
 };
 

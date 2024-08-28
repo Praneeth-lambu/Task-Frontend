@@ -5,9 +5,8 @@ const Home = () => {
     textAlign: 'center', // Center text horizontally
     marginTop: '20%', // Push the heading down from the top
     fontSize: '2.5rem', // Larger font size
-    color: 'white', // Dark gray color for the text
+    color: 'black', // Dark gray color for the text
     fontFamily: 'Arial, sans-serif', // Font family
-    fontWeight: 'bold', // Bold text
   };
 
   return (

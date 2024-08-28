@@ -1,0 +1,33 @@
+.notification-container {
+  position: fixed;
+  top: 80px;
+  right: 10px;
+  max-width: 300px;
+  z-index: 1000;
+}
+
+.notification {
+  background-color: #ffffff;
+  color: #333;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.notification button {
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.notification.upcoming {
+  background-color: #ece13a; /* Softer yellow */
+  color: #333; /* Darker text for better contrast */
+}
+
+.notification.pastDue {
+  background-color: #a8465f; /* Less intense red */
+  color: white; /* White text for better contrast */
+}

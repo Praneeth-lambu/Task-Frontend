@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { login } from '../../redux/authSlice';
 import { storeToken } from '../../api/authApi';
-
+import './Login.css'
 const Login = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate(); // Initialize navigate
@@ -25,64 +25,42 @@ const Login = () => {
             // Error is handled by the slice's rejected case
         }
     };
-    
-
-    const handleChangeEmail = (e) => {
-        setEmail(e.target.value);
-    };
-
-    const handleChangePassword = (e) => {
-        setPassword(e.target.value);
-    };
 
     return (
-        <>
-            <div style={{ paddingLeft: "700px" }}>
-                <h1>User Login</h1>
-            </div>
-            <div className='m-5' style={{ display: "flex", flexDirection: "column", paddingLeft: "400px" }}>
-                <div className="row pt-3">
-                    <div className="col-auto">
-                        <label htmlFor="inputemail" className="col-form-label">Email</label>
-                    </div>
-                    <div className="col-auto" style={{ paddingLeft: "39px" }}>
-                        <input
-                            type="email"
-                            id="inputemail"
-                            className="form-control"
-                            aria-describedby="emailHelper"
-                            value={email}
-                            onChange={handleChangeEmail}
-                        />
-                    </div>
+        <div className="container">
+            <div className="box login-box">
+                <h1 className="login-header">Login</h1>
+                <div className="form-group">
+                    <label htmlFor="inputemail">Email</label>
+                    <input
+                        type="email"
+                        id="inputemail"
+                        className="form-control"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
                 </div>
-                <div className="row pt-3">
-                    <div className="col-auto">
-                        <label htmlFor="inputPassword6" className="col-form-label">Password</label>
-                    </div>
-                    <div className="col-auto">
-                        <input
-                            type="password"
-                            id="inputPassword6"
-                            className="form-control"
-                            aria-describedby="passwordHelpInline"
-                            value={password}
-                            onChange={handleChangePassword}
-                        />
-                    </div>
+                <div className="form-group">
+                    <label htmlFor="inputPassword">Password</label>
+                    <input
+                        type="password"
+                        id="inputPassword"
+                        className="form-control"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
                 </div>
-                <div style={{ padding: "30px 0px 10px 100px" }}>
+                <div className="button-group">
                     <button
                         type="button"
-                        className="btn btn-outline-primary mb-3"
-                        style={{ marginRight: "20px" }}
+                        className="btn btn-primary"
                         onClick={handleLogin}
                     >
-                        Submit
+                        Sign In
                     </button>
                     <button
                         type="reset"
-                        className="btn btn-outline-primary mb-3"
+                        className="btn btn-primary"
                         onClick={() => {
                             setEmail('');
                             setPassword('');
@@ -95,7 +73,7 @@ const Login = () => {
                 {auth.status === 'failed' && <div style={{ color: 'red' }}>Error: {auth.error}</div>}
                 {auth.status === 'succeeded' && <div></div>}
             </div>
-        </>
+        </div>
     );
 };
 
