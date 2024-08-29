@@ -3,7 +3,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { getAuthHeaders } from './authApi'; // Import getAuthHeaders function
 
-const API_URL = 'http://127.0.0.1:5000';
+const API_URL = process.env.REACT_APP_API_URL;
 
 // Helper function to handle API errors
 const handleError = (error) => {

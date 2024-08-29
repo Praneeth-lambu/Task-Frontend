@@ -221,7 +221,7 @@ const Users = () => {
             </div>
           </>
         )}
-      </div>{console.log(status)}
+      </div>
       {status === 'succeeded' && users.length > 0 && (
         <div className="gridContainer">
           {users.map((item) => (

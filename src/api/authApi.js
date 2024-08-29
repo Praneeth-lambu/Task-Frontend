@@ -1,7 +1,8 @@
 // authApi.js
 import axios from 'axios';
 
-const API_URL = 'http://127.0.0.1:5000'; // Replace with your actual API URL
+const API_URL = process.env.REACT_APP_API_URL;
+
 
 // Function to store the token in localStorage
 export const storeToken = (token) => {
