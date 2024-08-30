@@ -4,19 +4,38 @@ This project is a web application that allows users to manage tasks and comments
 
 ## Features
 ## Authentication: 
-    User registration, login, and logout functionality.
+* User registration
+* login
+* logout
 ## Task Management: 
-    Create, read, update, and delete tasks.
+* Create
+* read
+* update
+* delete tasks.
 ## Comment Management: 
-    Add and fetch comments associated with tasks.
+* Add comments
+* fetch comments 
 ## User Management: 
-    CRUD operations for user accounts.
+* Add
+* update
+* delete
+* retrieve users.
+
+## Role-Based Access Control
+### Admin Functionality:
+
+* Access and manage all tasks, comments, and users.
+* Dashboard for viewing and managing the entire system.
+
+### Normal User Functionality:
+* Access and manage only their own tasks and comments.
 
 ## Technologies Used
 * React
 * Redux Toolkit
 * React Router
 * Axios (for API requests)
+
 ## Setup
 ## Prerequisites
 * Node.js and npm installed
