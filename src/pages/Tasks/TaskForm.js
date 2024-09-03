@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './TaskForm.css';  // Import your CSS file
+import { useSelector } from 'react-redux';
 
 const TaskForm = ({ task, onChange, onSubmit, onCancel, user, mode }) => {
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState(false);
+  const users = useSelector(state => state.users.users);
 
   // Validate fields
   const validate = () => {
@@ -55,14 +57,20 @@ const TaskForm = ({ task, onChange, onSubmit, onCancel, user, mode }) => {
       {user.role === "admin" && (
         <>
           <label htmlFor={`${mode}TaskAssignedTo`} className="inputLabel">Assigned To</label>
-          <input
+          <select
             id={`${mode}TaskAssignedTo`}
             name="assigned_to"
             type="text"
             value={task.assigned_to}
             onChange={onChange}
             className={`inputField ${touched && errors.assigned_to ? 'inputError' : ''}`}
-          />
+          >
+            {users.map(option => (
+              <option key={option.value} value={option.value} style={{color: "black"}}>
+                {option.name}
+              </option>
+            ))}
+          </select>
           {touched && errors.assigned_to && (
             <div className="errorContainer">
               <div className="errorMessage">{errors.assigned_to}</div>

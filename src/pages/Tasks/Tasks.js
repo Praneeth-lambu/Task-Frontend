@@ -5,6 +5,7 @@ import { addComment, fetchComments } from '../../redux/commentsSlice';
 import TaskForm from './TaskForm'; // Import the TaskForm component
 import './Tasks.css'; // Import specific styles
 import '../commonStyles.css'; // Import common styles
+import { fetchUsers, addUser, updateUser, deleteUser } from '../../api/userApi';
 
 const Tasks = () => {
   const dispatch = useDispatch();
@@ -26,11 +27,12 @@ const Tasks = () => {
   const [formMode, setFormMode] = useState('');
   const [filter, setFilter] = useState('');
   const [newComment, setNewComment] = useState('');
-
+  const users = useSelector(state => state.users.users);
   useEffect(() => {
     dispatch(fetchTasks(''));
+    dispatch(fetchUsers(''));
   }, [dispatch]);
-
+console.log(users)
   useEffect(() => {
     if (editTask) {
       dispatch(fetchComments(editTask._id));
@@ -101,7 +103,14 @@ const Tasks = () => {
 
   const getErrorMessage = () => {
     if (error) {
-      return error.status === 404 ? error.message : error.message || 'An error occurred. Please try again later.';
+      if (error.status === 404) {
+        return 'User not found. Please check the User ID.';
+      }
+      if (error.status === 400) {
+        return error.message;
+      } else {
+        return error.message || 'An error occurred. Please try again later.';
+      }
     }
     return null;
   };
@@ -153,7 +162,7 @@ const Tasks = () => {
   };
 
   if (status === 'loading') return <div>Loading...</div>;
-  if (status === 'failed' && error.status !== 404) return <div>{getErrorMessage()}</div>;
+  if (status === 'failed' && error.status === 404) return <div>{getErrorMessage()}</div>;
 
   return (
     <div className="container">
