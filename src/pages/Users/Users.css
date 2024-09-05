@@ -57,6 +57,7 @@
     background-color: #ac69d8;
     color: #fff;
     margin-right: 10px;
+    margin-bottom: 5px;
   }
   
   .button-delete:hover {
@@ -66,6 +67,7 @@
   .button-update {
     background-color: #8744c7;
     color: #fff;
+    margin-bottom: 5px;
   }
   
   .button-update:hover {
@@ -82,75 +84,53 @@
 .headerRow {
   display: flex;
   background-color: transparent;
-  /* Slightly off-white background for header to distinguish it */
   padding: 12px;
-  /* Increased padding for more emphasis */
   font-weight: bold;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  /* Slightly stronger shadow for more prominence */
   margin-bottom: 8px;
-  /* Space below the header row */
 }
 
 .headerCell {
   flex: 1;
-  /* Each header cell takes up equal space */
   text-align: center;
-  /* Center-align text */
   padding: 8px;
   border-right: 1px solid #3d3b3b;
-  /* Light border for separation between header cells */
   color: #333;
 }
 
 .headerCell:last-child {
   border-right: none;
-  /* Remove the right border from the last header cell */
 }
 
 .listView {
   list-style-type: none;
-  /* Removes default list styling */
   padding: 0;
-  /* Removes default padding */
   margin: 0;
-  /* Removes default margin */
 }
 
 .listItem {
   color: #333;
   display: flex;
-  border-bottom: 1px solid #131212;
-  /* Light border between list items */
-  padding: 12px;
-  /* Increased padding for better spacing */
+  /* border-bottom: 1px solid #131212; */
   box-sizing: border-box;
-  /* Ensure padding is included in width */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  /* Subtle shadow for list items */
   background-color: transparent;
-  /* White background for list items for contrast */
-  margin-bottom: 8px;
-  /* Space between list items */
 }
 
 .listCell {
   flex: 1;
   /* Each list cell takes up equal space */
   text-align: center;
-  /* Center-align text */
-  padding: 8px;
+  align-content: space-evenly;
   word-break: break-word;
-  /* Break long words */
   overflow-wrap: break-word;
-  /* Ensure long words break and wrap */
   white-space: normal;
 }
 
 .button-group {
   display: flex;
-  gap: 8px;
-  /* Space between buttons */
+  gap: 10px;
+  margin-top: 5px;
 }
 
 .listItem h2 {
@@ -168,22 +148,15 @@
     max-width: 1200px;
 }
 
-/* Button Group Styles */
-.button-group {
-  display: flex;
-  gap: 10px;
-  margin-top: 5px;
-}
-
 /* View Toggle Button Styles */
 .view-toggle {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   text-align: center;
   /* Aligns content to the right */
 }
 
 .view-toggle button {
-  padding: 10px 20px;
+  padding: 8px 15px;
   background-color: #007bff;
   color: white;
   border: none;

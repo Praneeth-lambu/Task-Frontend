@@ -5,7 +5,7 @@ import { addComment, fetchComments } from '../../redux/commentsSlice';
 import TaskForm from './TaskForm'; // Import the TaskForm component
 import './Tasks.css'; // Import specific styles
 import '../commonStyles.css'; // Import common styles
-import { fetchUsers, addUser, updateUser, deleteUser } from '../../api/userApi';
+import { fetchUsers } from '../../api/userApi';
 
 const Tasks = () => {
   const dispatch = useDispatch();
@@ -30,6 +30,7 @@ const Tasks = () => {
   const users = useSelector(state => state.users.users);
   useEffect(() => {
     dispatch(fetchTasks(''));
+    if(user.role === 'admin')
     dispatch(fetchUsers(''));
   }, [dispatch]);
 console.log(users)
@@ -162,7 +163,7 @@ console.log(users)
   };
 
   if (status === 'loading') return <div>Loading...</div>;
-  if (status === 'failed' && error.status === 404) return <div>{getErrorMessage()}</div>;
+  if (status === 'failed' && error.status !== 404 && error.status !==400) return <div>{getErrorMessage()}</div>;
 
   return (
     <div className="container">

@@ -91,3 +91,6 @@
 .status.success {
     color: green;
 }
+.button-verify{
+    margin: 10px;
+}
