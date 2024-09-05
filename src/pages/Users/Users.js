@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUsers, addUser, updateUser, deleteUser } from '../../api/userApi';
-import './Users.css'; // Import the specific styles
-import '../commonStyles.css'; // Import common styles
+import './Users.css';
+import '../commonStyles.css';
+
 
 const Users = () => {
   const dispatch = useDispatch();
@@ -13,7 +14,12 @@ const Users = () => {
   const [newUser, setNewUser] = useState({ name: '', email: '', password: '', role: 'user' });
   const [editUser, setEditUser] = useState(null); // Initializing as null for edit mode
   const [formMode, setFormMode] = useState(''); // 'add' or 'edit'
-  const [shouldFetchUsers, setShouldFetchUsers] = useState(false); // Control when to fetch users
+  const [shouldFetchUsers, setShouldFetchUsers] = useState(false);
+  const [viewMode, setViewMode] = useState('list');
+
+  useEffect(() => {
+    dispatch(fetchUsers(''));
+  }, [dispatch]);
 
   // Fetch users when component mounts or when shouldFetchUsers changes
   useEffect(() => {
@@ -85,8 +91,14 @@ const Users = () => {
     setEditUser({ ...user });
     setFormMode('edit');
   };
+  const onCancel = () => {
+    setNewUser({ name: '', email: '', password: '', role: 'user' });
+    setEditUser(null);
+    setFormMode('');
+    setUserId('');
+  };
 
-  // Get the error message to display
+
   const getErrorMessage = () => {
     if (error) {
       if (error.status === 404) {
@@ -102,7 +114,7 @@ const Users = () => {
   };
 
   if (status === 'loading') return <div>Loading...</div>;
-  if (status === 'failed' && error.status !== 404 && error.status !== 400 ) return <div>Error: {getErrorMessage()}</div>;
+  if (status === 'failed' && error.status !== 404 && error.status !== 400) return <div>Error: {getErrorMessage()}</div>;
 
   return (
     <div className="container">
@@ -120,7 +132,7 @@ const Users = () => {
       </div>
       <div className="buttonGroup">
         <button type="button" className="button button-add" onClick={handleFetchUsers}>
-          Get all users
+          Get User Details
         </button>
         <button type="button" className="button button-add" onClick={() => setFormMode('add')}>
           Add User
@@ -167,9 +179,16 @@ const Users = () => {
               <option value="user">User</option>
               <option value="admin">Admin</option>
             </select>
-            <div style={{ textAlign: 'center' }}>
+            <div style={{ textAlign: 'center', marginTop: '10px' }}>
               <button onClick={handleSubmit} className="button button-add">
                 Submit
+              </button>
+              <button
+                type="button"
+                onClick={onCancel}
+                className="button button-clear"
+              >
+                Clear
               </button>
             </div>
           </>
@@ -214,35 +233,79 @@ const Users = () => {
               <option value="user">User</option>
               <option value="admin">Admin</option>
             </select>
-            <div style={{ textAlign: 'center', margin:"10px" }}>
+            <div style={{ textAlign: 'center', marginTop: "10px" }}>
               <button onClick={handleSaveUpdate} className="button button-update">
                 Save Update
+              </button>
+              <button
+                type="button"
+                onClick={onCancel}
+                className="button button-clear"
+              >
+                Clear
               </button>
             </div>
           </>
         )}
+      </div><div className="view-toggle">
+        <button onClick={() => setViewMode(viewMode === 'list' ? 'card' : 'list')}>
+          {viewMode === 'list' ? 'Card' : 'List'} View
+        </button>
       </div>
       {status === 'succeeded' && users.length > 0 && (
-        <div className="gridContainer">
-          {users.map((item) => (
-            <div key={item._id} className="card">
-              <h2>Name: {item.name}</h2>
-              <p>Email: {item.email}</p>
-              <p>Password: {'********'}</p>
-              <p>Role: {item.role}</p>
-              <div className="button-group">
-                <button onClick={() => handleEdit(item)} className="button button-update">
-                  Edit
-                </button>
-                <button onClick={() => handleDelete(item._id)} className="button button-delete">
-                  Delete
-                </button>
+        <>
+          {viewMode === 'list' ? (
+            <div className="listContainer">
+              <div className="headerRow">
+                <div className="headerCell">Name</div>
+                <div className="headerCell">Email</div>
+                <div className="headerCell">Role</div>
+                <div className="headerCell">Actions</div>
               </div>
+              <ul className="listView">
+                {users.map((item) => (
+                  <li key={item._id} className="listItem">
+                    <div className="listCell">{item.name}</div>
+                    <div className="listCell">{item.email}</div>
+                    <div className="listCell">{item.role}</div>
+                    <div className="listCell">
+                      <div className="button-group">
+                        <button onClick={() => handleEdit(item)} className="button button-update">
+                          Edit
+                        </button>
+                        <button onClick={() => handleDelete(item._id)} className="button button-delete">
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
             </div>
-          ))}
-        </div>
+
+          ) : (
+            <div className="gridContainer">
+              {users.map((item) => (
+                <div key={item._id} className="card">
+                  <h2>Name: {item.name}</h2>
+                  <p>Email: {item.email}</p>
+                  <p>Password: {''}</p>
+                  <p>Role: {item.role}</p>
+                  <div className="button-group">
+                    <button onClick={() => handleEdit(item)} className="button button-update">
+                      Edit
+                    </button>
+                    <button onClick={() => handleDelete(item._id)} className="button button-delete">
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
       )}
-    {getErrorMessage()}
+      {getErrorMessage()}
     </div>
   );
 };
