@@ -269,7 +269,7 @@ const Users = () => {
                     <div className="listCell">{item.email}</div>
                     <div className="listCell">{item.role}</div>
                     <div className="listCell">
-                      <div className="button-group">
+                      <div className="button-group-list">
                         <button onClick={() => handleEdit(item)} className="button button-update">
                           Edit
                         </button>

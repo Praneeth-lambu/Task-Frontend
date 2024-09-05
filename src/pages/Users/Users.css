@@ -120,17 +120,19 @@
 .listCell {
   flex: 1;
   /* Each list cell takes up equal space */
-  text-align: center;
+  /* text-align:center; */
+  margin-left: 50px;
   align-content: space-evenly;
   word-break: break-word;
   overflow-wrap: break-word;
   white-space: normal;
 }
 
-.button-group {
+.button-group-list {
   display: flex;
-  gap: 10px;
-  margin-top: 5px;
+  gap: 20px; /* Adjust gap for spacing between buttons */
+  margin-top: 10px;
+  justify-content: center;
 }
 
 .listItem h2 {
