@@ -114,7 +114,7 @@ const Users = () => {
   };
 
   if (status === 'loading') return <div>Loading...</div>;
-  if (status === 'failed' && error.status !== 404 && error.status !== 400) return <div>Error: {getErrorMessage()}</div>;
+  if (status === 'failed' && error.status !== 404 && error.status !== 400) return <div style={{color:"black",fontSize: "20px"}}>{getErrorMessage()}</div>;
 
   return (
     <div className="container">
@@ -265,9 +265,9 @@ const Users = () => {
               <ul className="listView">
                 {users.map((item) => (
                   <li key={item._id} className="listItem">
-                    <div className="listCell">{item.name}</div>
+                    <div className="listCell ">{item.name}</div>
                     <div className="listCell">{item.email}</div>
-                    <div className="listCell">{item.role}</div>
+                    <div className="listCell"style={{textAlign:"center"}}>{item.role}</div>
                     <div className="listCell">
                       <div className="button-group-list">
                         <button onClick={() => handleEdit(item)} className="button button-update">
@@ -282,7 +282,6 @@ const Users = () => {
                 ))}
               </ul>
             </div>
-
           ) : (
             <div className="gridContainer">
               {users.map((item) => (
