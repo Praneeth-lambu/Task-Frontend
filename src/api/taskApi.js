@@ -78,3 +78,12 @@ export const deleteTask = createAsyncThunk(
     }
   }
 );
+
+// api/taskApi.js (or similar file for API calls)
+export const getTaskHistory = async (taskId) => {
+  const response = await fetch(`${API_URL}/tasks/getTaskHistory/${taskId}`,{ headers: getAuthHeaders() });
+  if (!response.ok) {
+    throw new Error('Failed to fetch task history');
+  }
+  return response.json();
+};

@@ -60,13 +60,13 @@ const TaskForm = ({ task, onChange, onSubmit, onCancel, user, mode }) => {
           <select
             id={`${mode}TaskAssignedTo`}
             name="assigned_to"
-            type="text"
-            value={task.assigned_to}
+            value={task.assigned_to || ''} // Use empty string if value is undefined
             onChange={onChange}
             className={`inputField ${touched && errors.assigned_to ? 'inputError' : ''}`}
           >
+            <option value="">Select User</option> {/* Default option */}
             {users.map(option => (
-              <option key={option.value} value={option.value} style={{color: "black"}}>
+              <option key={option.value} value={option.value}>
                 {option.name}
               </option>
             ))}
@@ -113,11 +113,11 @@ const TaskForm = ({ task, onChange, onSubmit, onCancel, user, mode }) => {
       <select
         id={`${mode}TaskStatus`}
         name="status"
-        value={task.status}
+        value={task.status || ''} // Use empty string if value is undefined
         onChange={onChange}
         className={`inputField ${touched && errors.status ? 'inputError' : ''}`}
       >
-        <option value="">Select Status</option>
+        <option value="">Select Status</option> {/* Default option */}
         <option value="pending">Pending</option>
         <option value="in_progress">In Progress</option>
         <option value="done">Done</option>
@@ -132,11 +132,11 @@ const TaskForm = ({ task, onChange, onSubmit, onCancel, user, mode }) => {
       <select
         id={`${mode}TaskPriority`}
         name="priority"
-        value={task.priority}
+        value={task.priority || ''} // Use empty string if value is undefined
         onChange={onChange}
         className={`inputField ${touched && errors.priority ? 'inputError' : ''}`}
       >
-        <option value="">Select Priority</option>
+        <option value="">Select Priority</option> {/* Default option */}
         <option value="Low">Low</option>
         <option value="Medium">Medium</option>
         <option value="High">High</option>

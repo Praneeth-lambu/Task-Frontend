@@ -111,3 +111,108 @@
   background-color: rgb(103, 121, 199); /* Red or any color for active state */
   color: #fff;
 }
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: rgb(255, 255, 255);
+  padding: 20px;
+  height: 80vh;
+  border-radius: 8px;
+  color: black;
+  width: 100%;
+  max-width: 600px;
+  position: relative;
+  font-size: 16px;
+  overflow: auto;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: black;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+}
+
+.modal-close:hover{
+  background-color: aliceblue;
+}
+
+.task-details {
+  margin-top: 20px;
+}
+
+.change-history {
+  list-style: none;
+  padding: 0;
+}
+
+.change-history li {
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+}
+/* Container for the task view */
+.task-view-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  width: 100%;
+}
+
+/* Table Styles */
+.tableContainer {
+  color: #333;
+  width: 100%;
+  max-width: 1200px;
+  overflow-x: auto; /* Allows horizontal scrolling if the table is too wide */
+  padding-bottom: 20px; /* Adjust as needed */
+}
+
+.taskTable {
+  width: auto;
+  margin: auto;
+  border-collapse: collapse; /* Ensures borders are collapsed into a single border */
+}
+
+.taskTable th, .taskTable td {
+  /* border: 1px solid #ddd; */
+  padding: 15px;
+  text-align: left;
+}
+
+.taskTable th {
+  /* background-color: #f4f4f4; */
+  font-weight: bold;
+}
+.table-row{
+  box-shadow: 0 2px 4px grey;
+  min-height: 5px;
+}
+
+.button-group-table{
+  display: flex;
+  gap: 15px;
+}
+.button-delete{
+  margin: 0px;
+}
+.button-update{
+  margin: 0px;
+}
