@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { loginUser, logoutUser, registerUser } from '../api/authApi'; // Adjust import path as needed
+import { loginUser, logoutUser, registerUser, requestPasswordReset, resetPassword } from '../api/authApi'; // Adjust import path as needed
 
 // Initial state
 const initialState = {
@@ -34,6 +34,22 @@ export const logout = createAsyncThunk('auth/logout', async (_, { rejectWithValu
 export const register = createAsyncThunk('auth/register', async (userData, { rejectWithValue }) => {
   try {
     const response = await registerUser(userData);
+    return response; // Contains success message or user data if needed
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
+export const requestReset = createAsyncThunk('auth/request_reset', async (userData, { rejectWithValue }) => {
+  try {
+    const response = await requestPasswordReset(userData);
+    return response; // Contains success message or user data if needed
+  } catch (error) {
+    return rejectWithValue(error.message);
+  }
+});
+export const ResetPassword = createAsyncThunk('auth/reset_password', async (userData, { rejectWithValue }) => {
+  try {
+    const response = await resetPassword(userData);
     return response; // Contains success message or user data if needed
   } catch (error) {
     return rejectWithValue(error.message);
@@ -90,7 +106,27 @@ const authSlice = createSlice({
       .addCase(register.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
-      });
+      }).addCase(ResetPassword.pending, (state) => {
+        state.status = 'loading';
+      }).addCase(ResetPassword.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        // Handle registration success, possibly redirect or show a message
+      }).addCase(ResetPassword.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      }).addCase(requestReset.pending, (state) => {
+        state.status = 'loading';
+      }).addCase(requestReset.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        // Handle registration success, possibly redirect or show a message
+      })
+      .addCase(requestReset.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      })
+
+      
+      ;
   }
 });
 

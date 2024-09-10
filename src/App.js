@@ -8,6 +8,7 @@ import Tasks from './pages/Tasks/Tasks';
 import Navbar from './resources/Navbar';
 import Notification from './resources/Notifications';
 import ProtectedRoute from './resources/ProtectedRoute';
+import PasswordReset from './pages/PasswordReset';
 
 function App() {
   return (
@@ -27,6 +28,10 @@ function App() {
         <Route
           path="/register"
           element={<ProtectedRoute element={<Register />} publicRoute={true} />}
+        />
+        <Route
+          path="/reset"
+          element={<ProtectedRoute element={<PasswordReset />} publicRoute={true} />}
         />
         <Route
           path="/tasks"

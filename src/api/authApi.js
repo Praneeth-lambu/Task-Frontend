@@ -56,6 +56,22 @@ export const registerUser = async (userData) => {
     throw new Error(handleError(error).message);
   }
 };
+export const resetPassword = async (userData) => {
+  try {
+    const response = await axios.post(`${API_URL}/mail/reset_password`, userData);
+    return response.data; // Only process non-sensitive data here
+  } catch (error) {
+    throw new Error(handleError(error).message);
+  }
+};
+export const requestPasswordReset = async (userData) => {
+  try {
+    const response = await axios.post(`${API_URL}/mail/request_reset`, userData);
+    return response.data; // Only process non-sensitive data here
+  } catch (error) {
+    throw new Error(handleError(error).message);
+  }
+};
 
 // Logout
 export const logoutUser = () => {

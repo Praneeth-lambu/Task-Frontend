@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import { login } from '../../redux/authSlice';
+import { login, requestReset } from '../../redux/authSlice';
 import { storeToken } from '../../api/authApi';
 import './Login.css'
 const Login = () => {
@@ -10,6 +10,7 @@ const Login = () => {
     const auth = useSelector((state) => state.auth);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [resetMode, setResetMode] = useState(false);
 
     const handleLogin = async () => {
         try {
@@ -21,6 +22,14 @@ const Login = () => {
             setPassword('');
             // Redirect to the tasks page
             navigate('/tasks');
+        } catch (error) {
+            // Error is handled by the slice's rejected case
+        }
+    };
+    const handleReset = async () => {
+        setResetMode(true)
+        try {
+            const response = await dispatch(requestReset({ email })).unwrap();
         } catch (error) {
             // Error is handled by the slice's rejected case
         }
@@ -40,7 +49,7 @@ const Login = () => {
                         onChange={(e) => setEmail(e.target.value)}
                     />
                 </div>
-                <div className="form-group">
+                {!resetMode && <div className="form-group">
                     <label htmlFor="inputPassword">Password</label>
                     <input
                         type="password"
@@ -49,21 +58,20 @@ const Login = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
-                </div>
+                </div>}
                 <div className="button-group">
-                    <button
+                    {!resetMode &&<button
                         type="button"
                         className="btn btn-primary"
                         onClick={handleLogin}
                     >
                         Sign In
-                    </button>
+                    </button>}
                     <button
                         type="reset"
                         className="btn btn-primary"
                         onClick={() => {
-                            setEmail('');
-                            setPassword('');
+                            handleReset()
                         }}
                     >
                         Reset

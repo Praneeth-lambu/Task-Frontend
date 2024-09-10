@@ -199,16 +199,16 @@ const Register = () => {
                         onChange={(e) => setEmail(e.target.value)}
                     />
                     {!otpSent && feedback && <div style={{ color: feedbackColor }}>{feedback}</div>}
-                    <div className="button-group">
+                    {<div className="button-group">
                         <button
                             type="button"
                             className="btn btn-primary"
                             onClick={handleSendOtp}
                             disabled={loading || feedbackColor !== 'green'}
                         >
-                            {otpSent ? (resendTimer !== 0 ? `Resend OTP (${Math.floor(resendTimer / 60)}m ${resendTimer % 60}s)` : "Resend OTP") : "Send OTP"}
+                            {otpSent ? (resendTimer !== 0 ? `Resend OTP (${Math.floor(resendTimer / 60)}m ${resendTimer % 60}s)` : "Resend OTP") : "Verify"}
                         </button>
-                    </div>
+                    </div>}
                     {otpSent && (
                         <div className="form-group">
                             <label htmlFor="inputOtp">OTP</label>
