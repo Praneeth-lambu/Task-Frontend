@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchTasks, addTask, updateTask, deleteTask } from '../../api/taskApi';
 import { addComment, fetchComments } from '../../redux/commentsSlice';
 import TaskForm from './TaskForm'; // Import the TaskForm component
+import TaskView from './TaskView'; // Import the TaskView component
 import './Tasks.css'; // Import specific styles
 import '../commonStyles.css'; // Import common styles
 import { fetchUsers } from '../../api/userApi';
@@ -13,7 +14,6 @@ const Tasks = () => {
   const status = useSelector(state => state.tasks.status);
   const error = useSelector(state => state.tasks.error);
   const user = useSelector(state => state.auth.user);
-  const comments = useSelector(state => state.comments.comments);
   const [taskId, setTaskId] = useState('');
   const [newTask, setNewTask] = useState({
     title: '',
@@ -27,13 +27,16 @@ const Tasks = () => {
   const [formMode, setFormMode] = useState('');
   const [filter, setFilter] = useState('');
   const [newComment, setNewComment] = useState('');
+  const [viewMode, setViewMode] = useState('list');
+
   const users = useSelector(state => state.users.users);
+
   useEffect(() => {
     dispatch(fetchTasks(''));
-    if(user.role === 'admin')
-    dispatch(fetchUsers(''));
+    if (user.role === 'admin')
+      dispatch(fetchUsers(''));
   }, [dispatch]);
-console.log(users)
+
   useEffect(() => {
     if (editTask) {
       dispatch(fetchComments(editTask._id));
@@ -94,14 +97,6 @@ console.log(users)
     }
   };
 
-  const handleStatusChange = (e) => {
-    handleChangeTask(e);
-  };
-
-  const handlePriorityChange = (e) => {
-    handleChangeTask(e);
-  };
-
   const getErrorMessage = () => {
     if (error) {
       if (error.status === 404) {
@@ -148,77 +143,49 @@ console.log(users)
     }
   };
 
-  const filteredTasks = tasks.filter(task => filter === '' || task.status === filter);
-
-  const handleAddComment = async () => {
-    if (newComment.trim() && editTask?._id) {
+  const handleAddComment = async (taskId, comment) => {
+    if (comment.trim()) {
       try {
-        await dispatch(addComment({ taskId: editTask._id, commentData: { text: newComment } })).unwrap();
+        await dispatch(addComment({ taskId, commentData: { text: comment } })).unwrap();
         setNewComment('');
-        dispatch(fetchComments(editTask._id));
+        dispatch(fetchComments(taskId));
       } catch (error) {
         console.error('Failed to add comment:', error);
       }
     }
   };
 
+  const handleToggleView = () => {
+    setViewMode(viewMode === 'list' ? 'card' : 'list');
+  };
+
   if (status === 'loading') return <div>Loading...</div>;
-  if (status === 'failed' && error.status !== 404 && error.status !==400) return <div>{getErrorMessage()}</div>;
+  if (status === 'failed' && error.status !== 404 && error.status !== 400) return <div style={{ color: "black", fontSize: "20px" }}>{getErrorMessage()}</div>;
 
   return (
     <div className="container">
       <div className="inputGroup">
         <label htmlFor="taskIdInput" className="inputLabel">Enter Task Details to Search</label>
-        <input
-          id="taskIdInput"
-          type="text"
-          value={taskId}
-          onChange={(e) => setTaskId(e.target.value)}
-          className="inputField"
-        />
-        <button
-          type="button"
-          className="button button-search"
-          onClick={handleFetchTasks}
-        >
+        <input id="taskIdInput" type="text" value={taskId} onChange={(e) => setTaskId(e.target.value)} className="inputField" />
+        <button type="button" className="button button-search" onClick={handleFetchTasks}>
           Search
         </button>
       </div>
 
       <div className="buttonGroup">
-        <button
-          type="button"
-          className={`button button-filter ${filter === 'pending' ? 'active' : ''}`}
-          onClick={() => handleFilter('pending')}
-        >
+        <button type="button" className={`button button-filter ${filter === 'pending' ? 'active' : ''}`} onClick={() => handleFilter('pending')} >
           Show Pending
         </button>
-        <button
-          type="button"
-          className={`button button-filter ${filter === 'in_progress' ? 'active' : ''}`}
-          onClick={() => handleFilter('in_progress')}
-        >
+        <button type="button" className={`button button-filter ${filter === 'in_progress' ? 'active' : ''}`} onClick={() => handleFilter('in_progress')} >
           Show In Progress
         </button>
-        <button
-          type="button"
-          className={`button button-filter ${filter === 'done' ? 'active' : ''}`}
-          onClick={() => handleFilter('done')}
-        >
+        <button type="button" className={`button button-filter ${filter === 'done' ? 'active' : ''}`} onClick={() => handleFilter('done')} >
           Show Completed
         </button>
-        <button
-          type="button"
-          className="button button-clear-filter"
-          onClick={clearFilter}
-        >
+        <button type="button" className="button button-clear-filter" onClick={clearFilter} >
           &times;
         </button>
-        <button
-          type="button"
-          className="button button-add"
-          onClick={() => setFormMode('add')}
-        >
+        <button type="button" className="button button-add" onClick={() => setFormMode('add')} >
           Add Task
         </button>
       </div>
@@ -234,64 +201,17 @@ console.log(users)
         />
       )}
 
-      {status === 'idle' && filteredTasks.length > 0 && (
-        <div className="gridContainer">
-          {filteredTasks.map((item) => (
-            <div
-              key={item._id}
-              className="card"
-            >
-              <h2>Title: {item.title}</h2>
-              <p>Assigned To: {item.assigned_to}</p>
-              <p>Description: {item.description}</p>
-              <p>Due Date: {item.due_date}</p>
-              <p>Status: {item.status === "in_progress" ? "In Progress" : item.status}</p>
-              <p>Priority: {item.priority}</p>
-              <div className="button-group" style={{ marginTop: '10px' }}>
-                <button
-                  onClick={() => handleEditClick(item)}
-                  className="button button-edit"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(item._id)}
-                  className="button button-delete"
-                >
-                  Delete
-                </button>
-              </div>
-              {formMode === 'edit' && editTask && editTask._id === item._id && (
-                <div className="commentsSection" style={{ marginTop: '20px' }}>
-                  <h3>Comments:</h3>
-                  <div className="commentsList">
-                    {(comments[item._id] || []).map((comment, index) => (
-                      <div key={index} className="comment">
-                        <p><b>{comment.author}</b> : {comment.text}</p>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="inputGroup">
-                    <textarea
-                      value={newComment}
-                      onChange={(e) => setNewComment(e.target.value)}
-                      className="commentInput"
-                      placeholder="Add a comment"
-                    />
-                    <button
-                      type="button"
-                      onClick={handleAddComment}
-                      className="button button-add-comment"
-                    >
-                      Add Comment
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+      <TaskView
+        tasks={tasks}
+        onEditClick={handleEditClick}
+        onDeleteClick={handleDelete}
+        viewMode={viewMode}
+        onToggleView={handleToggleView}
+        filter={filter}
+        onFilter={handleFilter}
+        onClearFilter={clearFilter}
+        onAddComment={handleAddComment}
+      />
     </div>
   );
 };

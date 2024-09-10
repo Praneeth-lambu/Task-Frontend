@@ -19,6 +19,7 @@ const Register = () => {
     const [loading, setLoading] = useState(false);
     const [feedback, setFeedback] = useState('');
     const [feedbackColor, setFeedbackColor] = useState('black');
+    const [resendTimer, setResendTimer] = useState(0); // Timer for resend OTP
 
     // Regular expression for basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -46,6 +47,21 @@ const Register = () => {
             setFeedbackColor('red');
         }
     }, [email]);
+
+    useEffect(() => {
+        // Start a countdown timer when OTP is sent
+        let timer;
+        if (otpSent && resendTimer > 0) {
+            timer = setInterval(() => {
+                setResendTimer((prev) => prev - 1);
+            }, 1000);
+        }
+        if (resendTimer === 0 && otpSent) {
+            setFeedback('You can resend OTP now.');
+            setFeedbackColor('green');
+        }
+        return () => clearInterval(timer);
+    }, [otpSent, resendTimer]);
 
     const checkEmailAvailability = async (email) => {
         try {
@@ -91,6 +107,7 @@ const Register = () => {
                 body: JSON.stringify({ email }),
             });
             setOtpSent(true);
+            setResendTimer(60); // Set timer for 1 minute (60 seconds)
             setFeedback('OTP sent successfully.');
             setFeedbackColor('blue'); // Indicate OTP has been sent
         } catch (error) {
@@ -189,7 +206,7 @@ const Register = () => {
                             onClick={handleSendOtp}
                             disabled={loading || feedbackColor !== 'green'}
                         >
-                            Send OTP
+                            {otpSent ? (resendTimer !== 0 ? `Resend OTP (${Math.floor(resendTimer / 60)}m ${resendTimer % 60}s)` : "Resend OTP") : "Send OTP"}
                         </button>
                     </div>
                     {otpSent && (
